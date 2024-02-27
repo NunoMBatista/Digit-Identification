@@ -10,7 +10,7 @@ end
 maxDuration = maxRows/Fs;
 
 % Create 9x3 matrix to store each one of the selected audio features 
-% Energy, max amplitude and zero crossing rate
+% Energy(1), average pitch(2) and standard deviation(3)
 audioFeatures = zeros(9, 3);
 
 for i = 0:9
@@ -18,6 +18,9 @@ for i = 0:9
     % Fs is the sampling frequency
     [y, Fs] = audioread(sprintf("Samples/%d_16_%d.wav", i, 0));
     
+    % Normalize the signal based on the maximum amplitude
+    y = y / max(abs(y));
+
     % Ts is the sampling period
     Ts = 1 / Fs;
 
@@ -44,16 +47,17 @@ for i = 0:9
     % End frame energy calculation
 
     % Get total energy
-    audioFeatures(i, 1) = sum(frameEnergy);
+    audioFeatures(i+1, 1) = sum(frameEnergy);
 
-    % Get max amplitude
-    audioFeatures(i, 2) = max(abs(y));
-
-    % Get zero crossing rate
-    audioFeatures(i, 3) = sum(abs(diff(sign(y)))) / (2 * rows);
+    % Get pitch
+    pitchVector = pitch(y, Fs);
+    audioFeatures(i+1, 2) = mean(pitchVector);
+    
+    % Get standard deviation (multiplied by 1000 to get a more readable value, even after normalization)
+    audioFeatures(i+1, 3) = std(y)*1000;
 
     % Find first index of the first frame with energy above threshold
-    energyThreshold = 0.005;
+    energyThreshold = 0.5;
     startFrame = find(frameEnergy > energyThreshold, 1);
     
     % Get the TIME index of the first frame with enery above threshold
@@ -80,5 +84,19 @@ for i = 0:9
 
     label = sprintf("%d", i);
     title(label);
-end
 
+
+end
+% Make a 3d scatter plot of the audio features
+figure;
+scatter3(audioFeatures(:, 1), audioFeatures(:, 2), audioFeatures(:, 3), [], 1:size(audioFeatures, 1), 'filled');
+xlabel('Energy');
+ylabel('Average Pitch');
+zlabel('Standard Deviation');
+title('Audio Features');
+grid on;
+% Label each color with the corresponding digit
+digits = 0:9;
+for i = 1:size(audioFeatures, 1)
+    text(audioFeatures(i, 1), audioFeatures(i, 2), audioFeatures(i, 3), num2str(digits(i)));
+end
