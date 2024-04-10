@@ -1,6 +1,6 @@
 Fs = 48000;
 
-audioSignals = preProcess(1)
+audioSignals = preProcess(1);
 
 figure;
 for i = 1:10
@@ -9,7 +9,7 @@ for i = 1:10
     fftData = fftData(1:floor(length(fftData)/2)); % only take the first half of the data because the second half is just a mirror image
 
     ampSpectrum = abs(fftData); % get the magnitude of the complex fourier series coefficients
-    ampSpectrum = ampSpectrum/length(fftData); % normalize by the number of samples
+    ampSpectrum = ampSpectrum ./ length(fftData); % normalize by the number of samples
 
     plot(ampSpectrum(1:3000), 'Color', 'red'); % set the color to yellow
     title(['Amplitude Spectrum of Digit ', num2str(i)]);
