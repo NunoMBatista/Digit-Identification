@@ -1,5 +1,4 @@
 function [] = boxplotFeature(data, feature, plotTitle)
-    figure;
     % Initialize an array to hold all feature values and an array to hold the corresponding digit labels
     allFeatureValues = [];
     digitLabels = [];

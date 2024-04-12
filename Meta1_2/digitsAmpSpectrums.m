@@ -1,5 +1,4 @@
 % Meta 2
-
 function [medianAmpSpectrumMat, Q25AmpSpectrumMat, Q75AmpSpectrumMat, meanAmpSpectrumMat, everyAmpSpectrumMat] = digitsAmpSpectrums(audioSignals, windowType)
     % Each index of audioSignals contains the audio signals of each one of the digits from that sample
 
@@ -17,18 +16,16 @@ function [medianAmpSpectrumMat, Q25AmpSpectrumMat, Q75AmpSpectrumMat, meanAmpSpe
         for i = 1:50 % for each sample
 
             if strcmp(windowType, 'hamming')
-                windowedSignal = audioSignals{i}{digit} .* hamming(length(audioSignals{i}{digit})); % apply hamming window to the audio signal
+                windowedSignal = audioSignals{i}{digit} .* hamming(length(audioSignals{i}{digit})); % apply hamming window
             elseif strcmp(windowType, 'hanning')
-                windowedSignal = audioSignals{i}{digit} .* hanning(length(audioSignals{i}{digit})); % apply hanning window to the audio signal
+                windowedSignal = audioSignals{i}{digit} .* hanning(length(audioSignals{i}{digit})); % apply hanning window
             elseif strcmp(windowType, 'blackman')
-                windowedSignal = audioSignals{i}{digit} .* blackman(length(audioSignals{i}{digit})); % apply blackman window to the audio signal
+                windowedSignal = audioSignals{i}{digit} .* blackman(length(audioSignals{i}{digit})); % apply blackman window
             else
                 windowedSignal = audioSignals{i}{digit}; % do not apply any window to the audio signal
             end
 
-            curDigitFFT = fft(windowedSignal); % get the fourier series coefficients of the current sample of the current digit
-            %curDigitFFT = fft(audioSignals{i}{digit}); % get the fourier series coefficients of the current sample of the current digit
-            
+            curDigitFFT = fft(windowedSignal); % get the fourier series coefficients of the current sample of the current digit            
             curDigitFFT = curDigitFFT(1:floor(length(curDigitFFT)/2)); % only take the first half of the data because the second half is symmetrical
 
             ampSpectrum = abs(curDigitFFT); % get the magnitude of the complex fourier series coefficients
