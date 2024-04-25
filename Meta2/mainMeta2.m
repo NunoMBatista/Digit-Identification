@@ -84,3 +84,19 @@ for i = 1:3
     subplot(1, 3, i);
     boxplotFeature(spectralFeatures(spectralBestFeaturesStrings{i}), spectralBestFeaturesStrings{i}, strcat(spectralBestFeaturesStrings{i}, ' for Each Digit'));
 end
+
+
+
+
+% Make a 3d scatter plot of the best features
+bf1 = nestedCell2Mat(spectralFeatures(spectralBestFeaturesStrings{1}));
+bf2 = nestedCell2Mat(spectralFeatures(spectralBestFeaturesStrings{2}));
+bf3 = nestedCell2Mat(spectralFeatures(spectralBestFeaturesStrings{3}));
+figure;
+annotation('textbox', [0 0.9 1 0.1], 'String', ['3D scatter plot of the best spectral features'], 'EdgeColor', 'none', 'HorizontalAlignment', 'center', 'FontSize', 15);
+scatter3(bf1, bf2, bf3);
+xlabel(spectralBestFeaturesStrings{1});
+ylabel(spectralBestFeaturesStrings{2});
+zlabel(spectralBestFeaturesStrings{3});
+legend('Digit 0', 'Digit 1', 'Digit 2', 'Digit 3', 'Digit 4', 'Digit 5', 'Digit 6', 'Digit 7', 'Digit 8', 'Digit 9');
+title('3D scatter plot of the best spectral features');
