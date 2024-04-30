@@ -9,7 +9,6 @@ audioSignalMedians = cell(10, 1);
 
 for i = 1:10
     curDigitSignals = [];
-
     % Get max length of current digit
     maxLength = 0;
     for j = 1:50
@@ -65,5 +64,7 @@ for i = 1:10
     cb = colorbar;
     ylabel(cb, 'Power/Frequency (dB/Hz)');
 end
+
+
 
 spectralTimeFeatures = containers.Map();
