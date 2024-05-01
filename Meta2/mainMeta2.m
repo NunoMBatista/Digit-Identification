@@ -86,8 +86,6 @@ for i = 1:3
 end
 
 
-
-
 % Make a 3d scatter plot of the best features
 bf1 = nestedCell2Mat(spectralFeatures(spectralBestFeaturesStrings{1}));
 bf2 = nestedCell2Mat(spectralFeatures(spectralBestFeaturesStrings{2}));
