@@ -13,34 +13,34 @@ overlap = round(0.0016 * Fs); % Overlap should be half the window size
 nfft = 2^nextpow2(windowSize); % Number of points for the FFT
 
 % Start plotting the spectrograms
-figure;
-for i = 1:10
-    % Get the audio signal
-    audioSignal = audioSignals{1}{i}; % Get the first example of each digit
+% figure;
+% for i = 1:10
+%     % Get the audio signal
+%     audioSignal = audioSignals{1}{i}; % Get the first example of each digit
     
-    % Find the last non-zero element
-    lastNonZero = find(audioSignal ~= 0, 1, 'last');
+%     % Find the last non-zero element
+%     lastNonZero = find(audioSignal ~= 0, 1, 'last');
     
-    % Trim the audio signal
-    trimmedAudioSignal = audioSignal(1:lastNonZero);
+%     % Trim the audio signal
+%     trimmedAudioSignal = audioSignal(1:lastNonZero);
     
-    subplot(5, 2, i);
-    [s, f, t] = spectrogram(trimmedAudioSignal, hamming(windowSize), overlap, nfft, Fs, 'yaxis'); % Get the spectrogram data
+%     subplot(5, 2, i);
+%     [s, f, t] = spectrogram(trimmedAudioSignal, hamming(windowSize), overlap, nfft, Fs, 'yaxis'); % Get the spectrogram data
 
-    % Plot the spectrogram in logarithmic scale
-    imagesc(t*1000, f, 10*log10(abs(s)));
+%     % Plot the spectrogram in logarithmic scale
+%     imagesc(t*1000, f, 10*log10(abs(s)));
 
-    axis xy;
-    title(['Digit ' num2str(i - 1)]);
+%     axis xy;
+%     title(['Digit ' num2str(i - 1)]);
 
-    % Label the axes
-    xlabel('Time (ms)');
-    ylabel('Frequency (Hz)');
+%     % Label the axes
+%     xlabel('Time (ms)');
+%     ylabel('Frequency (Hz)');
     
-    % Colorbar label
-    cb = colorbar;
-    ylabel(cb, 'Power/Frequency (dB/Hz)');
-end
+%     % Colorbar label
+%     cb = colorbar;
+%     ylabel(cb, 'Power/Frequency (dB/Hz)');
+% end
 
 spectrogramFeatures = containers.Map();
 
@@ -184,7 +184,6 @@ spectrogramFeatures('Spectral Centroid') = spectralCentroidDigit;
 
 spectrogramFeatures('Power STD per Frequency Band') = powerSTDFreqBandDigit;
 
-featuresStrings = {'meanPowerFreqBandDigit', 'meanPowerTimeBandDigit', 'peakPowerTimeBandDigit', 'spectralFlatnessTimeBandDigit', 'powerSTDTimeBandDigit', 'spectralFluxTimeBandDigit', 'spectralRollOffTimeBandDigit'};
 featuresStrings = {
     'Mean Power per Frequency Band', 
     'Mean Power per Time Band', 
@@ -196,30 +195,58 @@ featuresStrings = {
     'Power STD per Frequency Band'
 };
 
-for i = 1:length(featuresStrings)
-    figure;
-    curFeat = spectrogramFeatures(featuresStrings{i});
-    for j = 1:10   
-        data = curFeat{j}(:);
-        % data = meanPowerFreqBandDigit{i}(:);
+reducedMeanPowerTimeBandDigit = extractBestWindow(everyPeakPowerTimeBand, 5, 10, 1);
+
+reducedFeature = cell2mat(reducedMeanPowerTimeBandDigit)
+size(reducedFeature)
+
+figure;
+allFeatureValues = []
+digitLabels = []
+
+for digit = 1:10
+    currentFeatureValues = reducedFeature(i);
+
+    allFeatureValues = [allFeatureValues; currentFeatureValues];
+
+    digitLabels = [digitLabels; repmat(digit, length(currentFeatureValues), 1)]
+end    
+
+boxplot(allFeatureValues, digitLabels)
+
+xticklabels(0:9)
+
+title(plotTitle)
+xlabel('Digit')
+ylabel
+
+
+
+
+% for i = 1:length(featuresStrings)
+%     figure;
+%     curFeat = spectrogramFeatures(featuresStrings{i});
+%     for j = 1:10   
+%         data = curFeat{j}(:);
+%         % data = meanPowerFreqBandDigit{i}(:);
     
-        % Plot meanPowerFreqBandDigit for each digit in the same 2d plot, diferentiating digits by color
-        plot(data, 'DisplayName', ['Digit ' num2str(j - 1)]);
-        hold on;
-    end
-    title(featuresStrings{i});
-    colormap(jet(10));
-    legend('Location', 'Best');
-end
+%         % Plot meanPowerFreqBandDigit for each digit in the same 2d plot, diferentiating digits by color
+%         plot(data, 'DisplayName', ['Digit ' num2str(j - 1)]);
+%         hold on;
+%     end
+%     title(featuresStrings{i});
+%     colormap(jet(10));
+%     legend('Location', 'Best');
+% end
 
-figure;
-plot3DScatterPlot(everyPeakPowerTimeBand, 'Peak Power Time Band');
+% figure;
+% plot3DScatterPlot(everyPeakPowerTimeBand, 'Peak Power Time Band');
 
-figure;
-plot3DScatterPlot(everySpectralFluxTimeBand, 'Spectral Flux Time Band');
+% figure;
+% plot3DScatterPlot(everySpectralFluxTimeBand, 'Spectral Flux Time Band');
 
-figure;
-plot3DScatterPlot(everySpectralRollOffTimeBand, 'Spectral Roll Off Time Band');
+% figure;
+% plot3DScatterPlot(everySpectralRollOffTimeBand, 'Spectral Roll Off Time Band');
 
 % for i = 1:10
 %     % Get the mean power per time band for only one digit
@@ -353,5 +380,23 @@ function [newData] = addSilence(data, maxTimeWindows)
         newData = [data zeros(1, maxTimeWindows - size(data, 2))];
     else
         newData = data(1:maxTimeWindows);
+    end
+end
+
+
+function [reducedFeatureDigit] = extractBestWindow(everyWindowFeatureDigit, low, high, reductionType)
+    reducedFeatureDigit = cell(10, 50);
+    % Reduction types
+    % 1 -> Mean
+    % 2 -> Median
+    % 3 -> Max
+    % 4 -> Standard Deviation
+
+    if reductionType == 1
+        for dig = 1:10
+            for samp = 1:50
+                reducedFeatureDigit{dig, samp} = mean(everyWindowFeatureDigit(dig*samp, low:high));
+            end
+        end
     end
 end
