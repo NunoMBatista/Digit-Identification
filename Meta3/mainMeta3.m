@@ -13,39 +13,39 @@ windowSize = round(wCoeff * Fs); % Window size of 0.0064ms
 overlap = round(wCoeff * 0.5 * Fs); % Overlap should be half the window size
 nfft = 2^nextpow2(windowSize); % Number of points for the FFT
 
-% % Start plotting the spectrograms
-% figure;
-% for i = 1:10
-%     % Get the audio signal
-%     audioSignal = audioSignals{1}{i}; % Get the first example of each digit
+% Start plotting the spectrograms
+figure;
+for i = 1:10
+    % Get the audio signal
+    audioSignal = audioSignals{1}{i}; % Get the first example of each digit
     
-%     % Find the last non-zero element
-%     lastNonZero = find(audioSignal ~= 0, 1, 'last');
+    % Find the last non-zero element
+    lastNonZero = find(audioSignal ~= 0, 1, 'last');
     
-%     % Trim the audio signal
-%     trimmedAudioSignal = audioSignal(1:lastNonZero);
+    % Trim the audio signal
+    trimmedAudioSignal = audioSignal(1:lastNonZero);
     
-%     subplot(5, 2, i);
-%     [s, f, t] = spectrogram(trimmedAudioSignal, hamming(windowSize), overlap, nfft, Fs, 'yaxis'); % Get the spectrogram data
+    subplot(5, 2, i);
+    [s, f, t] = spectrogram(trimmedAudioSignal, hamming(windowSize), overlap, nfft, Fs, 'yaxis'); % Get the spectrogram data
 
-%     % Plot the spectrogram in logarithmic scale
-%     imagesc(t*1000, f, 10*log10(abs(s)));
+    % Plot the spectrogram in logarithmic scale
+    imagesc(t*1000, f, 10*log10(abs(s)));
 
-%     axis xy;
-%     title(['Digit ' num2str(i - 1)]);
+    axis xy;
+    title(['Digit ' num2str(i - 1)]);
 
-%     % Label the axes
-%     xlabel('Time (ms)');
-%     ylabel('Frequency (Hz)');
+    % Label the axes
+    xlabel('Time (ms)');
+    ylabel('Frequency (Hz)');
     
-%     % Colorbar label
-%     cb = colorbar;
-%     ylabel(cb, 'Power/Frequency (dB/Hz)');
-% end
+    % Colorbar label
+    cb = colorbar;
+    ylabel(cb, 'Power/Frequency (dB/Hz)');
+end
 
 spectrogramFeatures = containers.Map();
 
-lowTimeWindow = 20;
+lowTimeWindow = 1;
 maxTimeWindows = 120;
 maxFreqBands = ceil(nfft / 2) + 1;
 
@@ -229,97 +229,122 @@ spectrogramFeatures('Spectral Skewness') = spectralSkewnessDigit;
 
 
 featuresStrings = {
-    'Mean Power per Frequency Band', 
-    'Mean Power per Time Band', 
-    'Peak Power per Time Band', 
-    'Spectral Flatness per Time Band', 
-    'Power STD per Time Band', 
+    'Mean Power per Frequency Band',
+    'Mean Power per Time Band',
+    'Peak Power per Time Band',
+    'Spectral Flatness per Time Band',
+    'Power STD per Time Band',
     'Spectral Flux per Time Band', 
     'Spectral Roll-Off per Time Band',
     'Power STD per Frequency Band',
     'Spectral Roll-Off per Frequency Band',
-    'Spectral slopes per Time Band',
+    'Spectral slopes per Time Band'
 };
 
-% % Plotting of the Mean Power per Frequency Band
-% figure;
-% plot3DScatterPlot(everyMeanPowerFreqBand, 'Mean Power per Frequency Band 3D', 'Frequency Band', 'Sample/(Digit+1)', 'Power(dB)');
-% figure;
-% plot2Dwindow(meanPowerFreqBandDigit, 'Mean Power per Frequency Band 2D', 'Frequency Band', 'Power (dB)');
-% figure;
-% boxplotWindows(everyMeanPowerFreqBand, 'Mean Power in Different Frequency Bands', 9, lowTimeWindow, maxFreqBands, 'Digits', 'Power (dB)');
+% Plotting of the Mean Power per Frequency Band
+figure;
+plot3DScatterPlot(everyMeanPowerFreqBand, 'Mean Power per Frequency Band 3D', 'Frequency Band', 'Sample/(Digit+1)', 'Power(dB)');
+figure;
+plot2Dwindow(meanPowerFreqBandDigit, 'Mean Power per Frequency Band 2D', 'Frequency Band', 'Power (dB)');
+figure;
+boxplotWindows(everyMeanPowerFreqBand, 'Mean Power in Different Frequency Bands', 9, lowTimeWindow, maxFreqBands, 'Digits', 'Power (dB)');
 
-% % Plotting of the Mean Power per Time Band
-% figure;
-% plot3DScatterPlot(everyMeanPowerTimeBand, 'Mean Power per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Power(dB)');
-% figure;
-% plot2Dwindow(meanPowerTimeBandDigit, 'Mean Power per Time Band 2D', 'Time Band', 'Power (dB)');
-% figure;
-% boxplotWindows(everyMeanPowerTimeBand, 'Mean Power in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Power (dB)');
+% Plotting of the Mean Power per Time Band
+figure;
+plot3DScatterPlot(everyMeanPowerTimeBand, 'Mean Power per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Power(dB)');
+figure;
+plot2Dwindow(meanPowerTimeBandDigit, 'Mean Power per Time Band 2D', 'Time Band', 'Power (dB)');
+figure;
+boxplotWindows(everyMeanPowerTimeBand, 'Mean Power in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Power (dB)');
 
-% % Plotting of the Peak Power per Time Band
-% figure;
-% plot3DScatterPlot(everyPeakPowerTimeBand, 'Peak Power per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Power(dB)');
-% figure;
-% plot2Dwindow(peakPowerTimeBandDigit, 'Peak Power per Time Band 2D', 'Time Band', 'Power (dB)');
-% figure;
-% boxplotWindows(everyPeakPowerTimeBand, 'Peak Power in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Power (dB)');
+% Plotting of the Peak Power per Time Band
+figure;
+plot3DScatterPlot(everyPeakPowerTimeBand, 'Peak Power per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Power(dB)');
+figure;
+plot2Dwindow(peakPowerTimeBandDigit, 'Peak Power per Time Band 2D', 'Time Band', 'Power (dB)');
+figure;
+boxplotWindows(everyPeakPowerTimeBand, 'Peak Power in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Power (dB)');
 
-% % Plotting of the Spectral Flatness per Time Band
-% figure;
-% plot3DScatterPlot(everySpectralFlatnessTimeBand, 'Spectral Flatness per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Spectral Flatness');
-% figure;
-% plot2Dwindow(spectralFlatnessTimeBandDigit, 'Spectral Flatness per Time Band 2D', 'Time Band', 'Spectral Flatness');
-% figure;
-% boxplotWindows(everySpectralFlatnessTimeBand, 'Spectral Flatness in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Spectral Flatness');
+% Plotting of the Spectral Flatness per Time Band
+figure;
+plot3DScatterPlot(everySpectralFlatnessTimeBand, 'Spectral Flatness per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Spectral Flatness');
+figure;
+plot2Dwindow(spectralFlatnessTimeBandDigit, 'Spectral Flatness per Time Band 2D', 'Time Band', 'Spectral Flatness');
+figure;
+boxplotWindows(everySpectralFlatnessTimeBand, 'Spectral Flatness in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Spectral Flatness');
 
-% % Plotting of the Power STD per Time Band
-% figure;
-% plot3DScatterPlot(everyPowerSTDTimeBand, 'Power STD per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Power STD');
-% figure;
-% plot2Dwindow(powerSTDTimeBandDigit, 'Power STD per Time Band 2D', 'Time Band', 'Power STD');
-% figure;
-% boxplotWindows(everyPowerSTDTimeBand, 'Power STD in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Power STD');
+% Plotting of the Power STD per Time Band
+figure;
+plot3DScatterPlot(everyPowerSTDTimeBand, 'Power STD per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Power STD');
+figure;
+plot2Dwindow(powerSTDTimeBandDigit, 'Power STD per Time Band 2D', 'Time Band', 'Power STD');
+figure;
+boxplotWindows(everyPowerSTDTimeBand, 'Power STD in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Power STD');
 
-% % Plotting of the Spectral Flux per Time Band
-% figure;
-% plot3DScatterPlot(everySpectralFluxTimeBand, 'Spectral Flux per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Spectral Flux');
-% figure;
-% plot2Dwindow(spectralFluxTimeBandDigit, 'Spectral Flux per Time Band 2D', 'Time Band', 'Spectral Flux');
-% figure;
-% boxplotWindows(everySpectralFluxTimeBand, 'Spectral Flux in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Spectral Flux');
+% Plotting of the Spectral Flux per Time Band
+figure;
+plot3DScatterPlot(everySpectralFluxTimeBand, 'Spectral Flux per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Spectral Flux');
+figure;
+plot2Dwindow(spectralFluxTimeBandDigit, 'Spectral Flux per Time Band 2D', 'Time Band', 'Spectral Flux');
+figure;
+boxplotWindows(everySpectralFluxTimeBand, 'Spectral Flux in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Spectral Flux');
 
-% % Plotting of the Spectral Roll-Off per Time Band
-% figure;
-% plot3DScatterPlot(everySpectralRollOffTimeBand, 'Spectral Roll-Off per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Spectral Roll-Off');
-% figure;
-% plot2Dwindow(spectralRollOffTimeBandDigit, 'Spectral Roll-Off per Time Band 2D', 'Time Band', 'Spectral Roll-Off');
-% figure;
-% boxplotWindows(everySpectralRollOffTimeBand, 'Spectral Roll-Off in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Spectral Roll-Off');
+% Plotting of the Spectral Roll-Off per Time Band
+figure;
+plot3DScatterPlot(everySpectralRollOffTimeBand, 'Spectral Roll-Off per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Spectral Roll-Off');
+figure;
+plot2Dwindow(spectralRollOffTimeBandDigit, 'Spectral Roll-Off per Time Band 2D', 'Time Band', 'Spectral Roll-Off');
+figure;
+boxplotWindows(everySpectralRollOffTimeBand, 'Spectral Roll-Off in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Spectral Roll-Off');
 
-% % Plotting of the Power STD per Frequency Band
-% figure;
-% plot3DScatterPlot(everyPowerSTDFreqBand, 'Power STD per Frequency Band 3D', 'Frequency Band', 'Sample/(Digit+1)', 'Power STD');
-% figure;
-% plot2Dwindow(powerSTDFreqBandDigit, 'Power STD per Frequency Band 2D', 'Frequency Band', 'Power STD');
-% figure;
-% boxplotWindows(everyPowerSTDFreqBand, 'Power STD in Different Frequency Bands', 9, lowTimeWindow, maxFreqBands, 'Digits', 'Power STD');
+% Plotting of the Power STD per Frequency Band
+figure;
+plot3DScatterPlot(everyPowerSTDFreqBand, 'Power STD per Frequency Band 3D', 'Frequency Band', 'Sample/(Digit+1)', 'Power STD');
+figure;
+plot2Dwindow(powerSTDFreqBandDigit, 'Power STD per Frequency Band 2D', 'Frequency Band', 'Power STD');
+figure;
+boxplotWindows(everyPowerSTDFreqBand, 'Power STD in Different Frequency Bands', 9, lowTimeWindow, maxFreqBands, 'Digits', 'Power STD');
 
-% % Plotting of the Spectral Slopes per Time Band
-% figure;
-% plot3DScatterPlot(everySpectralSlopesTimeBand, 'Spectral Slopes per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Spectral Slopes');
-% figure;
-% plot2Dwindow(spectralSlopesTimeBandDigit, 'Spectral Slopes per Time Band 2D', 'Time Band', 'Spectral Slopes');
-% figure;
-% boxplotWindows(everySpectralSlopesTimeBand, 'Spectral Slopes in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Spectral Slopes');
+% Plotting of the Spectral Slopes per Time Band
+figure;
+plot3DScatterPlot(everySpectralSlopesTimeBand, 'Spectral Slopes per Time Band 3D', 'Time Band', 'Sample/(Digit+1)', 'Spectral Slopes');
+figure;
+plot2Dwindow(spectralSlopesTimeBandDigit, 'Spectral Slopes per Time Band 2D', 'Time Band', 'Spectral Slopes');
+figure;
+boxplotWindows(everySpectralSlopesTimeBand, 'Spectral Slopes in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Spectral Slopes');
 
-% % Plotting of the Spectral Centroid
-% figure;
-% boxplotReducedFeature(spectralCentroidDigit, 'Spectral Centroid', 'Spectral Centroid');
+% Plotting of the Spectral Centroid
+figure;
+boxplotReducedFeature(spectralCentroidDigit, 'Spectral Centroid', 'Spectral Centroid');
 
-% % Plotting of the Spectral Skewness
-% figure;
-% boxplotReducedFeature(spectralSkewnessDigit, 'Spectral Skewness', 'Spectral Skewness');
+% Plotting of the Spectral Skewness
+figure;
+boxplotReducedFeature(spectralSkewnessDigit, 'Spectral Skewness', 'Spectral Skewness');
+
+% Plot the 3 best features
+figure;
+subplot(1, 3, 1);
+bestWindowPTB = extractBestWindow(everyMeanPowerTimeBand, 40, 50, 1);
+bestWindowPTB = cell2mat(bestWindowPTB);
+
+boxplotReducedFeature(bestWindowPTB, 'Mean Power per Frequency Band', 'Mean Power per Frequency Band');
+subplot(1, 3, 2);
+boxplotReducedFeature(spectralSkewnessDigit, 'Spectral Skewness', 'Spectral Skewness');
+subplot(1, 3, 3);
+boxplotReducedFeature(spectralCentroidDigit, 'Spectral Centroid', 'Spectral Centroid');
+
+
+% Make a 3d scatterplot of the best features
+figure;
+annotation('textbox', [0 0.9 1 0.1], 'String', ['3D scatter plot of the best features'], 'EdgeColor', 'none', 'HorizontalAlignment', 'center', 'FontSize', 15);
+scatter3(bestWindowPTB, spectralSkewnessDigit, spectralCentroidDigit);
+xlabel('Mean Power per Frequency Band');
+ylabel('Spectral Skewness');
+zlabel('Spectral Centroid');
+legend('Digit 0', 'Digit 1', 'Digit 2', 'Digit 3', 'Digit 4', 'Digit 5', 'Digit 6', 'Digit 7', 'Digit 8', 'Digit 9');
+title('3D scatter plot of the best features'); 
+
+
 
 function boxplotWindows(feature, plotTitle, nWindows, low, high, xl, yl)
     k = 1;
@@ -411,13 +436,14 @@ function [reducedFeatureDigit] = extractBestWindow(everyWindowFeatureDigit, low,
     for dig = 1:10
         for samp = 1:50
             if reductionType == 1
-                reducedFeatureDigit{dig, samp} = mean(everyWindowFeatureDigit(dig*samp, low:high));
+                %reducedFeatureDigit{dig, samp} = mean(everyWindowFeatureDigit(dig*samp, low:high), 2);
+                reducedFeatureDigit{dig, samp} = mean(everyWindowFeatureDigit((dig-1)*50 + samp, low:high), 2);
             elseif reductionType == 2
-                reducedFeatureDigit{dig, samp} = median(everyWindowFeatureDigit(dig*samp, low:high));
+                reducedFeatureDigit{dig, samp} = median(everyWindowFeatureDigit((dig-1)*50 + samp, low:high), 2);
             elseif reductionType == 3
-                reducedFeatureDigit{dig, samp} = max(everyWindowFeatureDigit(dig*samp, low:high));
+                reducedFeatureDigit{dig, samp} = max(everyWindowFeatureDigit((dig-1)*50 + samp, low:high), 2);
             elseif reductionType == 4
-                reducedFeatureDigit{dig, samp} = std(everyWindowFeatureDigit(dig*samp, low:high));
+                reducedFeatureDigit{dig, samp} = std(everyWindowFeatureDigit((dig-1)*50 + samp, low:high), 1, 2);
             end
         end
     end
@@ -428,7 +454,7 @@ function boxplotReducedFeature(reducedFeature, featureString, plotTitle)
 
     xLabels = arrayfun(@num2str, 0:9, 'UniformOutput', false);
 
-    boxplot(feature, 'Labels', xLabels, 'Symbol', '', 'Whisker', 2);
+    boxplot(feature, 'Labels', xLabels, 'Symbol', '');
  
     title(plotTitle);
 end
