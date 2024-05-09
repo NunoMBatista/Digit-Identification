@@ -13,35 +13,35 @@ windowSize = round(wCoeff * Fs); % Window size of 0.0064ms
 overlap = round(wCoeff * 0.5 * Fs); % Overlap should be half the window size
 nfft = 2^nextpow2(windowSize); % Number of points for the FFT
 
-Start plotting the spectrograms
-figure;
-for i = 1:10
-    % Get the audio signal
-    audioSignal = audioSignals{1}{i}; % Get the first example of each digit
+% % Start plotting the spectrograms
+% figure;
+% for i = 1:10
+%     % Get the audio signal
+%     audioSignal = audioSignals{1}{i}; % Get the first example of each digit
     
-    % Find the last non-zero element
-    lastNonZero = find(audioSignal ~= 0, 1, 'last');
+%     % Find the last non-zero element
+%     lastNonZero = find(audioSignal ~= 0, 1, 'last');
     
-    % Trim the audio signal
-    trimmedAudioSignal = audioSignal(1:lastNonZero);
+%     % Trim the audio signal
+%     trimmedAudioSignal = audioSignal(1:lastNonZero);
     
-    subplot(5, 2, i);
-    [s, f, t] = spectrogram(trimmedAudioSignal, hamming(windowSize), overlap, nfft, Fs, 'yaxis'); % Get the spectrogram data
+%     subplot(5, 2, i);
+%     [s, f, t] = spectrogram(trimmedAudioSignal, hamming(windowSize), overlap, nfft, Fs, 'yaxis'); % Get the spectrogram data
 
-    % Plot the spectrogram in logarithmic scale
-    imagesc(t*1000, f, 10*log10(abs(s)));
+%     % Plot the spectrogram in logarithmic scale
+%     imagesc(t*1000, f, 10*log10(abs(s)));
 
-    axis xy;
-    title(['Digit ' num2str(i - 1)]);
+%     axis xy;
+%     title(['Digit ' num2str(i - 1)]);
 
-    % Label the axes
-    xlabel('Time (ms)');
-    ylabel('Frequency (Hz)');
+%     % Label the axes
+%     xlabel('Time (ms)');
+%     ylabel('Frequency (Hz)');
     
-    % Colorbar label
-    cb = colorbar;
-    ylabel(cb, 'Power/Frequency (dB/Hz)');
-end
+%     % Colorbar label
+%     cb = colorbar;
+%     ylabel(cb, 'Power/Frequency (dB/Hz)');
+% end
 
 spectrogramFeatures = containers.Map();
 
@@ -241,7 +241,6 @@ featuresStrings = {
     'Spectral slopes per Time Band',
 };
 
-
 % % Plotting of the Mean Power per Frequency Band
 % figure;
 % plot3DScatterPlot(everyMeanPowerFreqBand, 'Mean Power per Frequency Band 3D', 'Frequency Band', 'Sample/(Digit+1)', 'Power(dB)');
@@ -314,14 +313,13 @@ featuresStrings = {
 % figure;
 % boxplotWindows(everySpectralSlopesTimeBand, 'Spectral Slopes in Different Time Bands', 9, lowTimeWindow, maxTimeWindows, 'Digits', 'Spectral Slopes');
 
-% Plotting of the Spectral Centroid
-figure;
-boxplotReducedFeature(spectralCentroidDigit, 'Spectral Centroid', 'Spectral Centroid');
+% % Plotting of the Spectral Centroid
+% figure;
+% boxplotReducedFeature(spectralCentroidDigit, 'Spectral Centroid', 'Spectral Centroid');
 
-% Plotting of the Spectral Skewness
-figure;
-boxplotReducedFeature(spectralSkewnessDigit, 'Spectral Skewness', 'Spectral Skewness');
-
+% % Plotting of the Spectral Skewness
+% figure;
+% boxplotReducedFeature(spectralSkewnessDigit, 'Spectral Skewness', 'Spectral Skewness');
 
 function boxplotWindows(feature, plotTitle, nWindows, low, high, xl, yl)
     k = 1;
