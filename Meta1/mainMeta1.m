@@ -12,7 +12,7 @@ figure(1);
 audioFeatures(1, :, :) = getFeatures(1, 1);
 sgtitle('Signal examples');
 % i + 1 because MATLAB uses 1-based indexing but the audio file names use 0-based indexing
-for i = 1:49
+for i = 0:49
     audioFeatures(i+1, :, :) = getFeatures(i, 0);
 end
 audioFeatures;
@@ -72,3 +72,19 @@ zlabel(featureStrings{bestFeatures(3)});
 legend('Digit 0', 'Digit 1', 'Digit 2', 'Digit 3', 'Digit 4', 'Digit 5', 'Digit 6', 'Digit 7', 'Digit 8', 'Digit 9');
 title('3D scatter plot of the best features');
 % End of mainMeta2.m
+
+
+% save the 3 best features in csv files
+bestFeatures = [1, 4, 5];
+for i = 1:length(bestFeatures)
+    feature = bestFeatures(i);
+    % Prepare data for csvwrite
+    data = [];
+    for digit = 1:10
+        % The data matrix stores the feature values
+        % i.e. data(n, m) is the value of the current feature of the nth sample of digit m
+        data = [data; audioFeatures(:, digit, feature)'];
+    end
+    % Write each one of the features to a separate CSV file
+    csvwrite(['feature' num2str(i) '.csv'], data);
+end

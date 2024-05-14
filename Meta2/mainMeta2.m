@@ -51,7 +51,7 @@ for digit = 1:10
     spectralMean{digit} = curSampleSpectralMean;
     spectralFlux{digit} = curSampleSpectralFlux;
     spectralSpread{digit} = curSampleSpectralSpread;
-    spectralPeaksMedian{digit} = curSampleSpectralPeaksMedian;
+    spectralPeaksMedian{digit} = curSampleSpectralPeaksMedian
     spectralFlatness{digit} = curSampleSpectralFlatness;
     spectralVariance{digit} = curSampleSpectralVariance;
 end
@@ -98,3 +98,9 @@ ylabel(spectralBestFeaturesStrings{2});
 zlabel(spectralBestFeaturesStrings{3});
 legend('Digit 0', 'Digit 1', 'Digit 2', 'Digit 3', 'Digit 4', 'Digit 5', 'Digit 6', 'Digit 7', 'Digit 8', 'Digit 9');
 title('3D scatter plot of the best spectral features');
+
+
+% Save the 3 best features in csv files
+csvwrite('feature1.csv', bf1);
+csvwrite('feature2.csv', bf2);
+csvwrite('feature3.csv', bf3);

@@ -20,8 +20,8 @@ function [audioSignals] = preProcess(exampleID)
         % Normalize the signal based on the maximum amplitude
         min_y = min(y);
         max_y = max(y);
-        % y = (y - min_y) / (max_y - min_y);
-        % y = 2 * y - 1;
+        %y = (y - min_y) / (max_y - min_y);
+        %y = 2 * y - 1;
 
         y = y ./ max_y;
         % [rows, cols] are the original dimensions of y (there are #rows samples)

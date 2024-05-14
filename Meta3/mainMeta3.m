@@ -338,13 +338,16 @@ boxplotReducedFeature(spectralCentroidDigit, 'Spectral Centroid', 'Spectral Cent
 figure;
 annotation('textbox', [0 0.9 1 0.1], 'String', ['3D scatter plot of the best features'], 'EdgeColor', 'none', 'HorizontalAlignment', 'center', 'FontSize', 15);
 scatter3(bestWindowPTB, spectralSkewnessDigit, spectralCentroidDigit);
-xlabel('Mean Power per Frequency Band');
+xlabel('Mean Power per Time Band');
 ylabel('Spectral Skewness');
 zlabel('Spectral Centroid');
 legend('Digit 0', 'Digit 1', 'Digit 2', 'Digit 3', 'Digit 4', 'Digit 5', 'Digit 6', 'Digit 7', 'Digit 8', 'Digit 9');
 title('3D scatter plot of the best features'); 
 
-
+% Write each one of the features to a separate CSV file
+csvwrite('BestWindowPTB.csv', bestWindowPTB);
+csvwrite('SpectralSkewness.csv', spectralSkewnessDigit);
+csvwrite('SpectralCentroid.csv', spectralCentroidDigit);
 
 function boxplotWindows(feature, plotTitle, nWindows, low, high, xl, yl)
     k = 1;
