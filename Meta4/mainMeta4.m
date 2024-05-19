@@ -15,7 +15,7 @@ end
 
 fprintf("Number of correct guesses: %d\n", nCorrect);
 correctRate = nCorrect / 5;
-fprintf("Correct rate using 3 features: %f\n", correctRate);
+fprintf("Correct guess rate using 3 features: %f\n", correctRate);
 
 nCorrect = 0;
 for digit = 0:9
@@ -27,7 +27,7 @@ end
 
 fprintf("Number of correct guesses: %d\n", nCorrect);
 correctRate = nCorrect / 5;
-fprintf("Correct rate using 9 features: %f\n", correctRate);
+fprintf("Correct guess rate using 9 features: %f\n", correctRate);
 
 function [correct] = filterDigits(digit, exampleID)
     correct = 0;
@@ -88,6 +88,7 @@ function [correct] = filterDigits(digit, exampleID)
     [currentlyPossible, mostLikely, likelyFactor] = filterByFeature(EverySpectralCentroid, SpectralCentroid, currentlyPossible);
     likely(mostLikely) = likely(mostLikely) + likelyFactor;
 
+    fprintf("Sample %d (using 9 features) -> ", exampleID);
     % Print the possible digits
     npossible = sum(currentlyPossible);
     if(npossible == 1)
@@ -95,12 +96,10 @@ function [correct] = filterDigits(digit, exampleID)
         correct = 1;
     else
         fprintf('There are multiple possible digits ');
-        % for i = 1:10
-        %     if(currentlyPossible(i) == 1)
-        %         fprintf(' [%d] ', i - 1);
-        %     end
-        % end
         guess = find((likely == max(likely))) - 1;
+        if(length(guess) > 1)
+            guess = guess(1);
+        end
         fprintf('- Most Likely [%d]\n', guess);
         if(guess == digit)
             correct = 1;
@@ -110,14 +109,12 @@ function [correct] = filterDigits(digit, exampleID)
 end
 
 function [updatedPossible, mostLikely, likelyFactor] = filterByFeature(EveryFeature, currentFeature, currentlyPossible)
-    
     updatedPossible = currentlyPossible;
     minDifference = Inf;
     mostLikely = 1;
     
     likelyFactor = 0; 
     distancePerDigit = zeros(1, 10);
-    % Biggest likely factor possible
 
     for i = 1:10
         if(currentlyPossible(i) == 1)
@@ -176,6 +173,7 @@ function [correct] = filterDigitsLessFeatures(digit, exampleID)
     likely(mostLikely) = likely(mostLikely) + likelyFactor;
 
 
+    fprintf("Sample %d (using 3 features) -> ", exampleID);
     % Print the possible digits
     npossible = sum(currentlyPossible);
     if(npossible == 1)
@@ -183,18 +181,15 @@ function [correct] = filterDigitsLessFeatures(digit, exampleID)
         correct = 1;
     else
         fprintf('There are multiple possible digits ');
-        % for i = 1:10
-        %     if(currentlyPossible(i) == 1)
-        %         fprintf(' [%d] ', i - 1);
-        %     end
-        % end
         guess = find((likely == max(likely))) - 1;
+        if(length(guess) > 1)
+            guess = guess(1);
+        end
         fprintf('- Most Likely [%d]\n', guess);
         if(guess == digit)
             correct = 1;
         end
     end
-    
 end
 
 function [] = scatter3dBest()
