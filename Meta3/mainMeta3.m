@@ -55,7 +55,7 @@ peakPowerTimeBandDigit = cell(10, 1);
 spectralFlatnessTimeBandDigit = cell(10, 1);
 powerSTDTimeBandDigit = cell(10, 1);
 spectralFluxTimeBandDigit = cell(10, 1);
-spectralRollOffTimeBandDigit = cell(10, 1);
+spectralRollOffzZZZZZZZZZZZZZZZZZZZzzzzTimeBandDigit = cell(10, 1);
 powerSTDFreqBandDigit = cell(10, 1);
 spectralSlopesTimeBandDigit = cell(10, 1);
 
